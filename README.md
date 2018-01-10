@@ -16,6 +16,10 @@ $ npm install init-react -g
 $ react init <project-name>
 ```
 
+### Feature
+
+See: [react-template-webpack](https://github.com/yeild/react-template-webpack)
+
 ### License
 
 [MIT](http://opensource.org/licenses/MIT)
