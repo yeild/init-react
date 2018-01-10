@@ -1,0 +1,73 @@
+#!/usr/bin/env node
+const download = require('download-git-repo')
+const inquirer = require('inquirer')
+const program = require('commander')
+const generate = require('../utils/generate')
+const home = require('user-home')
+const exists = require('fs').existsSync
+const rm = require('rimraf').sync
+const chalk = require('chalk')
+const path = require('path')
+const ora = require('ora')
+
+program.usage('[project name]')
+.option('-c, --cache', 'use cached template')
+program.on('--help', () => {
+  console.log('  Examples:')
+  console.log()
+  console.log(chalk.gray('    # create a project in current dir:'))
+  console.log('    $ react init')
+  console.log()
+  console.log(chalk.gray('    # create a project in given dir:'))
+  console.log('    $ react init my-project')
+  console.log()
+})
+program.parse(process.argv)
+
+const rawName = program.args[0]
+const isCurrentDir = !rawName || rawName === '.' || rawName === './'
+const projectName = isCurrentDir ? path.relative('../', process.cwd()) : rawName
+const to = path.resolve(rawName || '.')
+
+if (exists(to)) {
+  inquirer.prompt([{
+    type: 'confirm',
+    message: isCurrentDir
+      ? 'Generate project in current directory?'
+      : 'Target directory exists. Continue?',
+    name: 'continue'
+  }]).then(answers => {
+    if (answers.continue) {
+      run()
+    }
+  }).catch(function (err) {
+    console.error(chalk.red(err))
+  })
+} else {
+  run()
+}
+
+function run() {
+  const cachePath = path.join(home, '.react-templates', 'webpack')
+  const templateRepo = 'yeild/react-template-webpack'
+  if(program.cache) {
+    if (exists(cachePath)) {
+      console.log(`> Use cached template at ${chalk.yellow(cachePath)}`)
+      generate(cachePath, to, projectName)
+    } else {
+      console.log(chalk.red('Local template "%s" not found.'), cachePath)
+    }
+  } else {
+    const spinner = ora('downloading template')
+    spinner.start()
+    if (exists(cachePath)) rm(cachePath)
+    download(templateRepo, cachePath, err => {
+      spinner.stop()
+      if (err) {
+        console.log(chalk.red('Failed to download repo ' + templateRepo + ': ' + err.message))
+      } else {
+        generate(cachePath, to, projectName)
+      }
+    })
+  }
+}
