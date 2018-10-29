@@ -46,7 +46,7 @@ module.exports = function generate(source, destination, projectName) {
     if (err) {
       throw err
     } else {
-      console.log(chalk.green('Generated "%s" successfully.'), projectName)
+      console.log(chalk.green('Generated "%s".'), projectName)
       if (typeof options.complete === 'function') {
         options.complete(metadata)
       }
