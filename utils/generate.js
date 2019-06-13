@@ -19,6 +19,7 @@ Handlebars.registerHelper('unless_eq', function (a, b, opts) {
     ? opts.inverse(this)
     : opts.fn(this)
 })
+
 /**
  *
  * @param source
@@ -53,6 +54,7 @@ module.exports = function generate(source, destination, projectName) {
     }
   })
 }
+
 function askQuestions (prompts) {
   return (files, metalsmith, done) => {
     ask(prompts, metalsmith.metadata(), done)

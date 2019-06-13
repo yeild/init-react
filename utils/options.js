@@ -9,6 +9,7 @@ module.exports = function options(projectName, dir) {
   if (author) setDefault(options, 'author', author)
   return options
 }
+
 function getMetadata(dir) {
   const metajs = path.resolve(dir, 'meta.js')
   let opts = {}
@@ -21,6 +22,7 @@ function getMetadata(dir) {
   }
   return opts
 }
+
 function setDefault (opts, key, val) {
   const prompts = opts.prompts || (opts.prompts = {})
   if (!prompts[key] || typeof prompts[key] !== 'object') {
