@@ -66,13 +66,21 @@ function filterFiles (filters) {
     if (!filters) {
       return done()
     }
-    let metadata = metalsmith.metadata()
-    Object.keys(filters).forEach(function (filter) {
-      Object.keys(files).forEach((function (file) {
-        if (file === filter && !metadata[filters[filter]]) {
-          delete files[file]
-        }
-      }))
+    const metadata = metalsmith.metadata()
+
+    Object.keys(files).forEach(function (file) {
+      Object.keys(filters).forEach(function (filter) {
+        const fileList = filters[filter]
+        let filesToRemove = []
+
+        if (typeof fileList[0] === 'string') {
+          if (!metadata[filter]) filesToRemove = fileList
+        } else filesToRemove = metadata[filter] ? fileList[1] : fileList[0]
+
+        filesToRemove.forEach(function (filename) {
+          if (file.split(path.sep).join('/') === filename) delete files[file]
+        })
+      })
     })
     done()
   }
