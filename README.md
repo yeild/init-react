@@ -1,6 +1,6 @@
 # init-react [![npm package](https://img.shields.io/npm/v/init-react.svg)](https://www.npmjs.com/package/init-react)
 
-A CLI for scaffolding React projects.
+A build-tools for React projects.
 
 ### Installation
 
